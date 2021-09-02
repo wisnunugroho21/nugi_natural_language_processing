@@ -20,7 +20,7 @@ class SingleLengthSelfAttention(nn.Module):
     def __init__(self, dim, dim_i):
         super(SingleLengthSelfAttention, self).__init__()
 
-        self.scaling_factor = torch.tensor(dim).sqrt()
+        self.scaling_factor = torch.tensor(dim)
 
         self.net_value = nn.Sequential(
             nn.Linear(dim, dim),
@@ -50,7 +50,7 @@ class SingleLengthSelfAttention(nn.Module):
         query   = self.net_query(x.flatten(1)).unsqueeze(1)
 
         attn_scores         = query @ key.transpose(1, 2)
-        scaled_attn_scores  = attn_scores / self.scaling_factor
+        scaled_attn_scores  = attn_scores / self.scaling_factor.sqrt()
         attn_scores_softmax = softmax(scaled_attn_scores, dim = -1)
         weighted_value      = attn_scores_softmax @ value
 
@@ -61,7 +61,7 @@ class MultiLengthSelfAttention(nn.Module):
     def __init__(self, dim):
         super(MultiLengthSelfAttention, self).__init__()
 
-        self.scaling_factor = torch.tensor(dim).sqrt()
+        self.scaling_factor = torch.tensor(dim)
 
         self.net_value = nn.Sequential(
             nn.Linear(dim, dim),
@@ -89,11 +89,11 @@ class MultiLengthSelfAttention(nn.Module):
         query   = self.net_query(x)
 
         attn_scores         = query @ key.transpose(1, 2)
-        scaled_attn_scores  = attn_scores / self.scaling_factor
+        scaled_attn_scores  = attn_scores / self.scaling_factor.sqrt()
         attn_scores_softmax = softmax(scaled_attn_scores, dim = -1)
         weighted_value      = attn_scores_softmax @ value
 
-        outputs = self.net_output(weighted_value.squeeze())
+        outputs = self.net_output(weighted_value)
         return outputs
 
 class Net(nn.Module):

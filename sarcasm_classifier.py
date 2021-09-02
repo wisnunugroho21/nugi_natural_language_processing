@@ -143,11 +143,11 @@ bceloss     = nn.BCEWithLogitsLoss()
 optimizer   = torch.optim.AdamW(net.parameters(), lr = 0.001)
 scaler      = torch.cuda.amp.GradScaler()
 
-traindataset = SarcasmDataset(True, training_size)
-trainloader = torch.utils.data.DataLoader(traindataset, batch_size = 32, shuffle = True, num_workers = 8)
+traindataset    = SarcasmDataset(True, training_size)
+trainloader     = torch.utils.data.DataLoader(traindataset, batch_size = 32, shuffle = True)
 
-testdataset = SarcasmDataset(False, training_size)
-testloader  = torch.utils.data.DataLoader(testdataset, batch_size = 32, shuffle = False, num_workers = 8)
+testdataset     = SarcasmDataset(False, training_size)
+testloader      = torch.utils.data.DataLoader(testdataset, batch_size = 32, shuffle = False)
 
 for epoch in range(num_epochs):
     total_loss = 0
